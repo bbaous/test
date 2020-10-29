@@ -1,0 +1,25 @@
+# user modules playbook:
+---
+- name: Linux Module running
+  hosts: tests
+  gather_facts: false
+  tasks:
+    - name: create a system user to be used by Ansible
+      user:
+        name: install
+        state: present
+        shell: /bin/bash
+        system: yes
+        hidden: yes
+        ssh_key_file: .ssh/id_rsa
+        expires: -1
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: create new group
+      group:
+        name: clustergroup
+        state: present
+        gid: 1040

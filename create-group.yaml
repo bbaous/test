@@ -1,0 +1,9 @@
+---
+- name: Linux Module running
+  hosts: tests
+  gather_facts: false
+  tasks:
+    - name: create new group
+      group:
+        name: sudo
+        state: present

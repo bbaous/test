@@ -1,0 +1,13 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: enable IP forwarding on IP version 4
+      sysctl:
+         name: net.ipv4.ip_forward
+         sysctl_file: /etc/sysctl.conf
+         value: 1
+         state: present
+         reload: yes

@@ -1,0 +1,71 @@
+---
+- name: Setup and configured recommended Linux services
+  hosts: tests
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Install a list of services on Linux hosts
+      package: 
+         name: '{{ item }}'
+         state: latest
+      with_items:
+         - ntp
+         - autofs
+
+    - name: Fix time zone on Red Hat 7
+      lineinfile: 
+         path: /etc/sysconfig/clock
+         line: "ZONE='UTC'"
+         state: present
+         create: yes
+      when: ansible_os_family == 'RedHat' and ansible_distribution_version.split('.')[0] == '6'
+
+    - name: Setup time zone on all local hosts
+      timezone: 
+         name: "UTC"
+
+    - name: Fix time zone on Red Hat 6
+      blockinfile:
+         path: /etc/ntp.conf
+         block: |
+            server time.nist.gov iburst
+            server 0.uk.pool.ntp.org iburst
+            server 1.uk.pool.ntp.org iburst
+         insertafter: "# Specify one or more NTP servers."
+         state: present
+
+    - name: Restart NTP service to apply change and enable it on Debian
+      systemd:
+         name: ntp
+         enabled: True
+         state: restarted
+      when: ansible_os_family == 'Debian'
+
+    - name: Restart NTP service to apply change and enable it on Red Hat
+      systemd:
+         name: ntpd
+         enabled: True
+         state: restarted
+      when: ansible_os_family == 'RedHat'
+
+    - name: Add NFS and SMB support to automount
+      blockinfile: 
+         path: /etc/auto.master
+         block: |
+            /nfs       /etc/auto.nfs
+            /cifs    /etc/auto.cifs 
+         state: present
+
+    - name: create the NFS and SMB AutoFS configuration files
+      file: 
+         name: '{{ item }}'
+         state: touch
+      with_items:
+         - '/etc/auto.nfs'
+         - '/etc/auto.cifs'
+
+    - name: Restart AutoFS service to apply change and enable it
+      systemd:
+         name: autofs
+         enabled: True
+         state: restarted

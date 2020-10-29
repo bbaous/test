@@ -1,0 +1,10 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: true
+  gather_facts: false
+  tasks:
+    - name: run a simple command
+      command: cat ~/hosts.txt
+      register: rawtxt
+    - debug: var=rawtxt.stdout

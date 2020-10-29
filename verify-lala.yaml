@@ -1,0 +1,23 @@
+---
+- hosts: tests
+  remote_user: root
+  tasks:
+  - name: ensure epel is at the latest version
+    yum:
+      name: epel-release
+      state: latest
+  - name: write the apache config file
+    template:
+      src: /etc/ansible/hosts
+      dest: /root/hosts
+    notify:
+    - restart ssh
+  - name: ensure sshd is running
+    service:
+      name: sshd
+      state: started
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted

@@ -1,0 +1,11 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: start and enable ntp service
+      service:
+          name: ntp
+          state: started
+          enabled: yes

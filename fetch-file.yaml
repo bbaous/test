@@ -1,0 +1,11 @@
+---
+- name: Fetch files
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Collect user files from remote hosts
+      fetch:
+         src: /home/install/script.py
+         dest: /home/install/user1-profile-{{ inventory_hostname }}
+         flat: yes

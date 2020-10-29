@@ -1,0 +1,26 @@
+---
+- name: lineinfile
+  hosts: tests
+  gather_facts: false
+  tasks:
+    - name: change a sudo user to no longer need password with config testing
+      lineinfile:
+        path: /etc/sudoers
+        regexp: '^%sudo\s'
+        line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+        state: present
+        validate: "/usr/sbin/visudo -cf %s"
+
+    - name: use yum to install multiple apps
+      yum:
+        name: '{{ app }}'   
+        state: latest
+      vars:
+        app:
+        - ufw
+
+    - name: add port 5000 for iperf testing on all hosts      
+      ufw:
+        rule: allow
+        port: 5000
+        proto: tcp

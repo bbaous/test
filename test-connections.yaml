@@ -1,0 +1,9 @@
+---
+- hosts: tests
+  order: sorted
+  gather_facts: False
+  remote_user: root
+  tasks:
+    - name: test connection
+      ping:
+      remote_user: root

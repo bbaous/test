@@ -1,0 +1,24 @@
+---
+- name: Log into private registry and force re-authorization
+  hosts: localhost
+  become: yes
+  gather_facts: true
+  tasks:
+  - name: Log into private registry and force re-authorization
+    docker_login:
+      registry: eccr-dev.ecmwf.int
+      username: syo
+      password: A6$len$$277
+      reauthorize: yes
+  
+  - name: create a container
+    docker_container:
+      name: 14-openj9
+      image: eccr-dev.ecmwf.int/pds/java:14-openj9
+      pull: yes
+      state: present
+
+  - name: start a container
+    docker_container:
+      name: 14-openj9
+      state: started

@@ -1,0 +1,38 @@
+---
+- name: Restart Linux hosts if reboot is required after updates  
+  hosts: tests  
+  gather_facts: true  
+  tasks:    
+  - name: check for updates
+    yum: 
+      name: "*"
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: apply updates
+    yum: 
+      name: "*"
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+    
+  - name: check if reboot is required
+    become: yes
+    become_method: sudo
+    shell: "[ -f /var/run/reboot-required ]"
+    failed_when: False
+    register: reboot_required      
+    changed_when: reboot_required.rc == 0
+    notify: reboot 
+  
+  - name: print system update status return value
+    debug: 
+        var: reboot_required.changed
+
+  handlers:
+    - name: reboot
+      command: shutdown -r now "Ansible triggered reboot after system updated"
+      async: 0
+      poll: 0      
+      ignore_errors: true

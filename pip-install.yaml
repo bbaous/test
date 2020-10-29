@@ -1,0 +1,10 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: true
+  gather_facts: false
+  tasks:
+    - name: install a python library from the default repo
+      pip:
+         name: numpy
+         

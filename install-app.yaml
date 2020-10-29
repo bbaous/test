@@ -1,0 +1,16 @@
+- hosts: all
+  order: sorted
+  gather_facts: False
+  tasks:
+  - name: use yum to install multiple apps
+    yum:
+      name: '{{ app }}'   
+      state: latest
+  vars:
+    app:
+    - htop
+    - vim
+    - python2-pip
+    - ufw
+
+    

@@ -1,0 +1,23 @@
+---
+- name: Docker Module running
+  hosts: localhost
+  tasks:
+    - name: create a container
+      docker_container:
+          name: debianlinux
+          image: debian:9
+          pull: yes
+          state: present
+
+    - name: start a container
+      docker_container:
+          name: debianlinux
+          state: started
+          #devices:
+          #- "/dev/sda:/dev/xvda:rwm"
+          
+    - name: stop a container
+      docker_container:
+          name: debianlinux
+          state: stopped
+

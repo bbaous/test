@@ -1,0 +1,17 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: start and enable ntp service using systemd
+      systemd:
+        name: ntpd
+        state: started
+        enabled: yes
+        masked: no
+        daemon_reload: yes
+      register: systemd
+
+    - debug:
+        var: systemd.status.Description

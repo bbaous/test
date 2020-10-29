@@ -1,0 +1,17 @@
+---
+- name: copy a file to hosts
+  hosts: tests
+  tasks:
+    - name: create a file with some specific acl
+      file:
+         path: /usr/local/script.py
+         state: touch
+         owner: root
+         group: sudo
+         mode: 0755
+
+    - name: change acl of a file
+      acl:
+        path: /usr/local/script.py
+        permission: w
+        state: present

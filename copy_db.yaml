@@ -1,0 +1,17 @@
+---
+  - name: Copy Database configuration file  
+    hosts: linux    servers  
+    become: yes  
+    remote_user: setup  
+    gather_facts: true   
+    tasks:    
+      - name: Import variable from an other YAML 
+        include_vars: /home/billy/learning_ansible/variables/database2.yml  
+      
+      - name: Copy db config file
+        template:
+            src: /home/billy/learning_ansible/templates/b.conf.j2
+            dest: /etc/mysql/db.conf
+            owner: bin
+            group: wheel
+            mode: 0600

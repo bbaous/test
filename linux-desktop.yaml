@@ -1,0 +1,104 @@
+---
+- name: Setup and connect network shared folders
+  hosts: Linux
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Install OpenBox graphical interface
+      apt: 
+         name: '{{ item }}'
+         state: latest
+         update_cache: yes
+      with_items:
+         - openbox
+         - nitrogen
+         - pnmixer
+         - conky
+         - obconf
+         - xcompmgr
+         - tint2
+
+    - name: Install basic tools for desktop Linux usage and application build
+      apt: 
+         name: '{{ item }}'
+         state: latest
+         update_cache: yes
+      with_items:
+         - htop
+         - screen
+         - libreoffice-base
+         - libreoffice-calc
+         - libreoffice-impress
+         - libreoffice-writer
+         - gnome-tweak-tool
+         - firefox
+         - thunderbird
+         - nautilus
+         - build-essential
+         - automake
+         - autoconf
+         - unzip
+         - python-pip
+         - default-jre
+         - cmake
+         - git
+         - wget
+         - cpanminus
+         - r-base
+         - r-base-core
+         - python3-dev
+         - python3-pip
+         - libgsl0-dev
+
+    - name: Install tools using Perl CPAN
+      cpanm:
+          name: '{{ item }}'
+      with_items:
+         - Data::Dumper
+         - File::Path
+         - Cwd
+
+    - name: Install tools using Python PyPip
+      shell: pip3 install -U '{{ item }}'
+      with_items:
+         - numpy 
+         - cython
+         - scipy
+         - biopython
+         - pandas
+
+    - name: Install tools on R CRAN using Bioconductor as source 
+      shell:  Rscript --vanilla -e "source('https://bioconductor.org/biocLite.R'); biocLite(ask=FALSE); biocLite(c('ggplots2', 'edgeR','optparse'), ask=FALSE);"
+
+    - name: Download a tool to be compiled on each host
+      get_url:  
+          url: http://cegg.unige.ch/pub/newick-utils-1.6-Linux-x86_64-enabled-extra.tar.gz 
+          dest: /usr/local/newick.tar.gz
+          mode: 0755
+
+    - name: Unarchive the downloaded tool on each host
+      unarchive:  
+          src: /usr/local/newick.tar.gz
+          dest: /usr/local/
+          remote_src: yes
+          mode: 0755
+
+    - name: Configure the tool before to the host before building
+      command: ./configure chdir="/usr/local/newick-utils-1.6"
+
+    - name: Build the tool on the hosts
+      make:
+          chdir: /usr/local/newick-utils-1.6
+          target: install
+
+    - name: Create Symlink to the tool’s binary to be executable from anywhere in the system 
+      shell: ln -s -f /usr/local/newick-utils-1.6/src/nw_display /usr/local/bin/nw_display
+
+    - name: Installing another tool located into a github repo
+      git:  
+          repo: https://github.com/chrisquince/DESMAN.git
+          dest: /usr/local/DESMAN
+          clone: yes
+
+    - name: Setup the application using python compiler
+      shell: cd /usr/local/DESMAN; python3 setup.py install

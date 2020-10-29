@@ -1,0 +1,12 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: run a simple shell script
+      shell: ./shell_script.sh >> ~/shell.txt
+      args:
+          chdir: /usr/local/
+          creates: ~/shell.txt
+          executable: /bin/sh

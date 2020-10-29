@@ -1,0 +1,9 @@
+- 
+  name: Playbook to run two commands
+  hosts: tests
+  tasks:
+  -  name: cat the content of /etc/fstav
+     command: cat /etc/fstab
+
+  -   name: Check memory
+      command: free -m  

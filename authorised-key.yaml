@@ -1,0 +1,11 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: add a new authorise SSH key to the user install
+      authorized_key:
+          user: root
+          state: present
+          key: "{{ lookup('file', '/home/billy/.ssh/id_rsa.pub') }}"

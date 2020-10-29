@@ -1,0 +1,7 @@
+- hosts: all
+  order: sorted
+  gather_facts: False
+  tasks:
+  - name: run this command and ignore the result
+    shell: /usr/bin/ls
+    ignore_errors: True

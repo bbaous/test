@@ -1,0 +1,10 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: addling nouveau nvidia driver to the kernel blaklist
+      kernel_blacklist:
+         name: nouveau
+         state: present

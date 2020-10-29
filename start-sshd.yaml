@@ -1,0 +1,9 @@
+---
+- hosts: tests
+  remote_user: root
+  tasks:
+    - service:
+        name: sshd
+        state: started
+      become: yes
+      become_method: sudo

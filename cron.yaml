@@ -1,0 +1,21 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: setup a cron job
+      cron:
+         name: “shared folder permission enforcer”
+         special_time: daily
+         hour: 0
+         minute: 0
+         day: *
+         job: “chmod -R 777 /media/shared”
+         state: present
+
+    - name: link the cron PATH variable with a new binaries location
+      cron:
+         name: PATH
+         env: yes
+         value: /usr/local/app/bin

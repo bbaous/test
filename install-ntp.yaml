@@ -1,0 +1,10 @@
+---
+- name: Linux Module running
+  hosts: tests
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: install ntpd using yum
+      yum:
+           name: ntp
+           state: present

@@ -1,0 +1,10 @@
+---
+- name: copy a file to hosts
+  hosts: tests
+  tasks:
+    - name: copy a file to the home directory of a user
+      copy:
+        src: /etc/ansible/hosts
+        dest: ~/hosts.txt
+        owner: setup
+        mode: 0766
